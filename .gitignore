@@ -216,3 +216,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Data - NEVER commit patient data
+*.parquet
+*.tsv
+*.csv
+*.npz
+*.rds
+data/
+clouds_*/
