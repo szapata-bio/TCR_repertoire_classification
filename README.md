@@ -48,7 +48,7 @@ The contribution here is the repertoire-level formulation, the full preprocessin
 ├── figures/                                      # exported plots (safe to share)
 ├── requirements.txt
 └── README.md
-​```
+```
 
 ## Pipeline (high level)
 
