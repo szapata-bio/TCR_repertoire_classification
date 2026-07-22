@@ -1,5 +1,9 @@
 # TCR_repertoire_classification
 
+[![Built with Claude](https://img.shields.io/badge/Built_with-Claude-D97757)](https://claude.ai)
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+
 Extending clonotype-level TCR classification to whole repertoires, using a frozen foundation model ([CD4_CD8_classification](https://github.com/ilyada/CD4_CD8_classification)) with no retraining. Each repertoire — a donor's cloud of thousands of clonotypes — is summarized into a single fixed descriptor (mean + covariance of its L2-normalized clonotype embeddings, weighted by clonal abundance), then analyzed with a reference-set-size retrieval metric (`ref_size_sweep_auroc`).
 
 The contribution here is the repertoire-level formulation, the full preprocessing pipelines from raw data, the evaluation against standard confounds, a proof-of-concept CD4/CD8 deconvolution, and a two-cohort α/β chain validation. Developed with assistance from Claude (Anthropic).
