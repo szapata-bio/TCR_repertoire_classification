@@ -27,8 +27,8 @@ The contribution here is the repertoire-level formulation, the full preprocessin
 **Takeaway.** The frozen clonotype model carries a signal that **aggregates coherently to the repertoire level**: it captures *global* differences (CD4/CD8 lineage, chain identity) robustly and is compositional enough to read immune fractions from mixtures. It does not capture *fine, dispersed* signal (donor identity in bulk, disease-specific clonotypes) — an expected and informative boundary.
 
 ## Repo structure
-​```
-.
+```
+
 ├── notebooks/
 │   ├── cd4cd8/
 │   │   ├── 01_preprocess.ipynb                   # raw MiXCR -> clean clouds; depth confound
@@ -48,6 +48,7 @@ The contribution here is the repertoire-level formulation, the full preprocessin
 ├── figures/                                      # exported plots (safe to share)
 ├── requirements.txt
 └── README.md
+
 ```
 
 ## Pipeline (high level)
