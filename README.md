@@ -1,9 +1,16 @@
 # TCR_repertoire_classification
-Repertoire-level CD4/CD8 classification using a frozen TCR foundation model
 
-Extending clonotype-level TCR classification to whole repertoires, using a frozen foundation model ([CD4_CD8_classification](https://github.com/ilyada/CD4_CD8_classification)) with no retraining. This repository reformulates the CD4/CD8 problem at the repertoire level: each repertoire — a donor's cloud of thousands of clonotypes — is summarized into a single fixed descriptor (mean + covariance of its L2-normalized clonotype embeddings, weighted by clonal abundance), then classified with a reference-set-size retrieval metric (`ref_size_sweep_auroc`).
+Extending clonotype-level TCR classification to whole repertoires, using a frozen foundation model ([CD4_CD8_classification](https://github.com/ilyada/CD4_CD8_classification)) with no retraining. Each repertoire — a donor's cloud of thousands of clonotypes — is summarized into a single fixed descriptor (mean + covariance of its L2-normalized clonotype embeddings, weighted by clonal abundance), then analyzed with a reference-set-size retrieval metric (`ref_size_sweep_auroc`).
 
-The contribution here is the repertoire-level formulation, the full preprocessing pipeline from raw data, the evaluation against standard confounds, and a proof-of-concept CD4/CD8 deconvolution from synthetic bulk mixtures. Developed with assistance from Claude (Anthropic).
+The contribution here is the repertoire-level formulation, the full preprocessing pipelines from raw data, the evaluation against standard confounds, a proof-of-concept CD4/CD8 deconvolution, and a two-cohort α/β chain validation. Developed with assistance from Claude (Anthropic).
+
+## Three parts
+
+**1 · CD4/CD8 classification.** Can a whole repertoire be classified CD4 vs CD8? Yes — AUROC 0.93 (1 reference) → 0.99 (25), robust to depth, descriptor choice, a V-gene baseline, and cohort.
+
+**2 · CD4/CD8 deconvolution.** Is the descriptor compositional? Starting from FACS-sorted CD4/CD8 populations mixed in silico at known fractions, the CD4/CD8 fraction is recoverable cross-patient (~0.13 MAE) — a proof of concept toward reading immune composition from bulk, with real unsorted validation as the next step.
+
+**3 · α/β chain validation (Rosati & Russell).** The same pipeline on a new label — chain (alpha vs beta) — across two independent bulk cohorts. Chain separates perfectly (AUROC 1.000) as a **sanity check** confirming the pipeline is robust to data format (MiXCR vs TCRdist) and to the absence of abundance. Donor and disease-group labels give no signal, as expected for bulk (reported for completeness).
 
 ## Key results
 
@@ -15,22 +22,37 @@ The contribution here is the repertoire-level formulation, the full preprocessin
 | Beyond V-gene usage? | **Yes** — foundation > V-gene baseline (esp. at low reference counts) |
 | Cohort-driven? | **No** — holds within HD, MS, T1D separately |
 | Compositional (deconvolution)? | **Yes** — CD8 fraction recoverable cross-patient, ~0.13 MAE |
+| Pipeline robust across cohorts/formats? | **Yes** — chain AUROC 1.000 in both Rosati & Russell |
 
-**Takeaway.** The frozen clonotype model carries a CD4/CD8 signal that aggregates coherently to the repertoire level and is compositional enough to read immune fractions from mixtures.
+**Takeaway.** The frozen clonotype model carries a signal that **aggregates coherently to the repertoire level**: it captures *global* differences (CD4/CD8 lineage, chain identity) robustly and is compositional enough to read immune fractions from mixtures. It does not capture *fine, dispersed* signal (donor identity in bulk, disease-specific clonotypes) — an expected and informative boundary.
 
 ## Repo structure
 
-```
+​```
 .
 ├── notebooks/
-│   ├── 01_cd4cd8_repertoire_evaluation.ipynb   # main: sweep + controls + deconvolution
-│   └── 02_deconvolution.ipynb                  # full CD4/CD8 deconvolution experiment
+│   ├── cd4cd8/
+│   │   ├── 01_preprocess.ipynb                   # raw MiXCR -> clean clouds; depth confound
+│   │   ├── 02_cd4cd8_repertoire_evaluation.ipynb # main sweep + controls
+│   │   ├── 03_variance_analysis.ipynb            # within-group dispersion + PCA
+│   │   └── 04_deconvolution.ipynb                # CD4/CD8 fraction recovery
+│   ├── rosati/
+│   │   ├── rosati_01_preprocess.ipynb            # MiXCR, two UMI thresholds
+│   │   ├── rosati_umi_histograms_EN.ipynb        # UMI-threshold diagnostic
+│   │   ├── rosati_02_chain_sweep.ipynb           # chain sanity check
+│   │   ├── rosati_03_donor_signature.ipynb       # donor (expected negative)
+│   │   └── rosati_04_group_separability.ipynb    # disease group (expected negative)
+│   └── russell/
+│       ├── russell_01_preprocess.ipynb           # TCRdist, uniform weights
+│       ├── russell_02_chain_sweep.ipynb          # chain sanity check
+│       └── russell_03_donor_signature.ipynb      # donor (expected negative)
 ├── docs/
-│   └── methods.md                              # datasets, preprocessing, design decisions
-├── figures/                                    # exported plots (safe to share)
+│   ├── methods.md                                # full pipeline, all three parts
+│   └── methods_alphabeta.md                      # α/β datasets, UMI decision, details
+├── figures/                                      # exported plots (safe to share)
 ├── requirements.txt
 └── README.md
-```
+​```
 
 ## Pipeline (high level)
 
@@ -38,7 +60,7 @@ The contribution here is the repertoire-level formulation, the full preprocessin
 2. **Embed** each clonotype with the frozen foundation model → 128-d vectors per clonotype.
 3. **Describe** each repertoire → one mean+cov descriptor per cloud.
 4. **Evaluate** with `ref_size_sweep_auroc` + controls (rarefaction, V-gene baseline, per-cohort).
-5. **Deconvolve** CD4/CD8 fractions from synthetic bulk mixtures (leave-one-patient-out).
+5. **Deconvolve** / **validate** — CD4/CD8 fractions from mixtures; chain/donor/group across cohorts.
 
 ## Reproducibility
 
@@ -50,14 +72,14 @@ Patient repertoire data is **not included** (human clinical data). The notebooks
 
 ## Requirements
 
-```
+​```
 numpy
 pandas
 matplotlib
 scipy
 scikit-learn
 pyarrow
-```
+​```
 
 Plus the `rep_*` library (from the referenced repository) on the path.
 
