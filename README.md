@@ -27,7 +27,6 @@ The contribution here is the repertoire-level formulation, the full preprocessin
 **Takeaway.** The frozen clonotype model carries a signal that **aggregates coherently to the repertoire level**: it captures *global* differences (CD4/CD8 lineage, chain identity) robustly and is compositional enough to read immune fractions from mixtures. It does not capture *fine, dispersed* signal (donor identity in bulk, disease-specific clonotypes) — an expected and informative boundary.
 
 ## Repo structure
-
 ​```
 .
 ├── notebooks/
@@ -39,13 +38,10 @@ The contribution here is the repertoire-level formulation, the full preprocessin
 │   ├── rosati/
 │   │   ├── rosati_01_preprocess.ipynb            # MiXCR, two UMI thresholds
 │   │   ├── rosati_umi_histograms_EN.ipynb        # UMI-threshold diagnostic
-│   │   ├── rosati_02_chain_sweep.ipynb           # chain sanity check
-│   │   ├── rosati_03_donor_signature.ipynb       # donor (expected negative)
-│   │   └── rosati_04_group_separability.ipynb    # disease group (expected negative)
+│   │   └── rosati_02_chain_sweep.ipynb           # chain sanity check
 │   └── russell/
 │       ├── russell_01_preprocess.ipynb           # TCRdist, uniform weights
-│       ├── russell_02_chain_sweep.ipynb          # chain sanity check
-│       └── russell_03_donor_signature.ipynb      # donor (expected negative)
+│       └── russell_02_chain_sweep.ipynb          # chain sanity check
 ├── docs/
 │   ├── methods.md                                # full pipeline, all three parts
 │   └── methods_alphabeta.md                      # α/β datasets, UMI decision, details
