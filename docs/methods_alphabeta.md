@@ -87,8 +87,8 @@ noisy with few clonotypes. **Takeaway:** mean+cov is more robust than occupancy,
 
 ## Highlights — donor and group (expected negatives)
 
-These were run but show no resaltable signal, as expected for bulk. Reported for completeness
-(notebooks `*_03_donor_signature`, `rosati_04_group_separability`).
+These were run but show no notable signal, as expected for bulk. Reported here for completeness; the
+chain sweep is the notebook of record for the α/β analysis.
 
 - **Donor signature (cross-chain retrieval).** Can a donor's alpha cloud retrieve its own beta cloud
   among all betas? **No** — AUROC ≈ 0.52 in both cohorts (Rosati α→β 0.517 / β→α 0.526; Russell 0.509 /
